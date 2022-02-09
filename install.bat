@@ -1,1 +1,1 @@
-pip3 install twisted
+py -m pip install twisted nuitka

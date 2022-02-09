@@ -1,0 +1,2 @@
+py -m nuitka --windows-disable-console --standalone --onefile --enable-plugin=tk-inter --show-progress --show-memory --output-dir=build client.py
+py -m nuitka --standalone --onefile --show-progress --show-memory --output-dir=build server.py

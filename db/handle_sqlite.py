@@ -1,9 +1,3 @@
-#--coding:utf-8--
-# @Time    : 2020/12/27/027 22:25
-# @Author  : panyuangao
-# @File    : handle_mysql.py
-# @PROJECT : chatRoom
-
 import sqlite3
 from os.path import exists
 class SQLite():

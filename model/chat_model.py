@@ -1,8 +1,3 @@
-#--coding:utf-8--
-# @Time    : 2020/12/28/028 23:52
-# @Author  : panyuangao
-# @File    : chat_model.py
-# @PROJECT : chatRoom
 import json
 def chat(self, data_dict):  # 聊天逻辑
     message = data_dict["message"].strip()

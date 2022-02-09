@@ -1,8 +1,3 @@
-#--coding:utf-8--
-# @Time    : 2020/12/15/015 0:07
-# @Author  : panyuangao
-# @File    : client.py
-# @PROJECT : chatRoom
 import tkinter
 from tkinter import messagebox
 import json,time
@@ -10,7 +5,12 @@ import threading
 import select
 from socket import *
 
+SERVER_HOST = gethostname()
+SERVER_PORT = 1200
+    
+
 def client_draw_draw_login(self): #登录页面
+    print ( '[ ] Drawing login interface', end='' )
     self.root.title("聊天室登录页面")  # 给主窗口设置标题内容
     self.root.geometry('450x300') # 设置主窗口大小
     self.canvas = tkinter.Canvas(self.root, height=200, width=500)  # 创建画布
@@ -28,9 +28,11 @@ def client_draw_draw_login(self): #登录页面
     self.input_password.place(x=135, y=150)
     self.login_button.place(x=120, y=235)
     self.register_button.place(x=250, y=235)
+    print ( '\r[+] Drawing login interface' )
 
 
 def client_draw_draw_register(self): #注册页面控件创
+    print ( '[ ] Drawing register interface', end='' )
     self.login_button.destroy()
     self.register_button.destroy()
     self.root.title("聊天室注册页面")
@@ -50,9 +52,11 @@ def client_draw_draw_register(self): #注册页面控件创
     self.input_nickname.place(x=135, y=190)
     self.register_submit_button.place(x=120, y=235)
     self.return_login_button.place(x=250, y=235)
+    print ( '\r[+] Drawing register interface' )
 
 
 def client_draw_draw_chat(self,nickname):
+    print ( '[ ] Drawing chat interface', end='' )
     self.root.title("【%s】的聊天室页面" %nickname)  # 给主窗口设置标题内容
     self.root.geometry('520x560')
     # 创建frame容器
@@ -62,11 +66,11 @@ def client_draw_draw_chat(self,nickname):
 
     self.txtMsgList = tkinter.Text(self.frmLT)
     self.txtMsgList.tag_config('DimGray', foreground='#696969',font=("Times", "11"))  #设置消息时间字体样式
-    self.txtMsgList.tag_config('DarkTurquoise', foreground='#00CED1', font=("Message", "13"),spacing2=5) #设置自己的消息字体样式
+    self.txtMsgList.tag_config('Blue4', foreground='#00008B', font=("Message", "13"),spacing2=5) #设置自己的消息字体样式
     self.txtMsgList.tag_config('Black', foreground='#000000', font=("Message", "13"), spacing2=5)  # 设置其它人的消息字体样式
 
     self.txtMsg = tkinter.Text(self.frmLC)
-    self.txtMsg.bind("<KeyPress-Return>", self.sendMsgEvent) # 触发键盘的回车按键事件，发送消息
+    self.txtMsg.bind("<Control-Return>", self.sendMsgEvent) # 触发键盘的回车按键事件，发送消息
     self.btnSend = tkinter.Button(self.frmLB, text='发送', width=12, command=self.sendMsg)
     self.labSend = tkinter.Label(self.frmLB, width=55) #创建空的Label在左边占个位置，便于发送按钮靠右
 
@@ -87,14 +91,16 @@ def client_draw_draw_chat(self,nickname):
 
     # WM_DELETE_WINDOW 不能改变，这是捕获命令
     self.root.protocol('WM_DELETE_WINDOW', self.on_closing)
+    print ( '\r[+] Drawing chat interface' )
 
 class ChatRoom(object):
     def connect(self): #配置连接
+        print ( '[ ] Connecting to server', end='' )
         self.s = socket(AF_INET, SOCK_STREAM)
-        remote_host = gethostname() #获取计算机名称
-        port = 1200  #设置端口号
+        remote_host = SERVER_HOST #获取计算机名称
+        port = SERVER_PORT  #设置端口号
         self.s.connect((remote_host, port))  # 发起连接
-        print("从%s成功连接到%s" %(self.s.getsockname(),self.s.getpeername()))
+        print ( '\r[+] Successfully connected from %s to %s'%(self.s.getsockname(),self.s.getpeername()) )
         return self.s
 
     def recive(self,s): # 监听消息
@@ -103,8 +109,8 @@ class ChatRoom(object):
          rs, ws, es = select.select(self.my, [], [])
          if s in rs:
              try:
-                 data = s.recv(1024).decode('utf-8')
-                 data_dict = json.loads(data)
+                 data = s.recv(1024)
+                 data_dict=json.loads(data.decode('utf-8'))
                  type = data_dict["type"] # 根据服务端返回的type值，进入不同逻辑
                  if type == "login": # 登录逻辑
                      if "000000" == data_dict["code"]: #code返回000000，跳转聊天页面
@@ -151,6 +157,7 @@ class ChatRoom(object):
 
 
     def verify_register(self): # 获取输入框内容，进行注册验证
+        print ( '[ ] Verifying register', end='' )
         account = self.input_account.get()
         password = self.input_password.get()
         nickname = self.input_nickname.get()
@@ -164,19 +171,23 @@ class ChatRoom(object):
             self.s.send(data.encode('utf-8'))
         except Exception as e:
             print(e)
+            return
+        print ( '\r[+] Verifying register... Done' )
 
     def verify_login(self): # 获取输入框内容，进行登录信息验证
+        print ( '[ ] Verifying login', end='' )
         account = self.input_account.get()
         password = self.input_password.get()
         try:
-          login_data = {}
-          login_data["type"] = "login"
-          login_data["account"] = account
-          login_data["password"] = password
-          data = json.dumps(login_data) #将login_data由dict格式转为json字符串，便于网络传输
-          self.s.send(data.encode('utf-8'))
+            login_data = {}
+            login_data["type"] = "login"
+            login_data["account"] = account
+            login_data["password"] = password
+            data = json.dumps(login_data)  #将login_data由dict格式转为json字符串，便于网络传输
+            self.s.send(data.encode('utf-8'))
         except Exception as e:
-          print(e)
+            print(e)
+        print ( '\r[+] Verifying login... Done' )
 
 
     def sendMsg(self):#获取输入框内容，发送消息
@@ -186,13 +197,14 @@ class ChatRoom(object):
             return
         self.txtMsg.delete('0.0', tkinter.END)
         try:
-          chat_data = {}
-          chat_data["type"] = "chat"
-          chat_data["message"] = message
-          data = json.dumps(chat_data) #将chat_data由dict格式转为json字符串，便于网络传输
-          self.s.send(data.encode('utf-8'))
+            chat_data = {}
+            chat_data["type"] = "chat"
+            chat_data["message"] = message
+            data = json.dumps(chat_data) #将chat_data由dict格式转为json字符串，便于网络传输
+            self.s.send(data.encode('utf-8'))
+            
         except Exception as e:
-          print(e)
+            print(e)
 
     def sendMsgEvent(self,event):#发送消息事件
         if event.keysym =='Return': #如果捕捉到键盘的回车按键，触发消息发送
@@ -201,6 +213,7 @@ class ChatRoom(object):
     def on_closing(self):  # 聊天页面，点击右上角退出时执行
         if messagebox.askokcancel("退出提示", "是否离开聊天室？"):
             self.root.destroy()
+            exit(0)
 
 def main():
     chatRoom = ChatRoom()

@@ -1,9 +1,4 @@
-#--coding:utf-8--
-# @Time    : 2020/12/28/028 23:07
-# @Author  : panyuangao
-# @File    : login_model.py
-# @PROJECT : chatRoom
-from db import user_db
+﻿from db import user_db
 import json
 
 def login(self,data_dict):#登录逻辑

@@ -1,8 +1,4 @@
-#--coding:utf-8--
-# @Time    : 2020/12/28/028 23:10
-# @Author  : panyuangao
-# @File    : register_model.py
-# @PROJECT : chatRoom
+﻿
 from db import user_db
 import json
 

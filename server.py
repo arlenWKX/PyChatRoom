@@ -1,9 +1,3 @@
-#--coding:utf-8--
-# @Time    : 2020/11/30/030 23:04
-# @Author  : panyuangao
-# @File    : server.py
-# @PROJECT : chatRoom
-
 from twisted.internet.protocol import Factory
 from twisted.protocols.basic import LineReceiver  # 事件处理器
 from twisted.internet import reactor
