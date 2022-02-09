@@ -4,6 +4,7 @@ import json,time
 import threading
 import select
 from socket import *
+import os
 
 SERVER_HOST = gethostname()
 SERVER_PORT = 1200
@@ -213,7 +214,7 @@ class ChatRoom(object):
     def on_closing(self):  # 聊天页面，点击右上角退出时执行
         if messagebox.askokcancel("退出提示", "是否离开聊天室？"):
             self.root.destroy()
-            exit(0)
+            os.exit(0)
 
 def main():
     chatRoom = ChatRoom()
